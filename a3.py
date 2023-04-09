@@ -88,7 +88,7 @@ def getbase():
             if pancakes_global[i] > ee:
                 bigger += 1
         # print(f"bigger {bigger} i {i}")
-        if bigger < len(e)/2:
+        if bigger <= len(e)/2:
             return len(pancakes_global)-i-1
         
 def main():
