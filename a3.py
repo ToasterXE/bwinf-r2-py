@@ -17,8 +17,9 @@ def sort_wbase(pancakes,base = 0):
     for i in range(len(pancakes)-base-2,-1,-1):
         newpancakes.append(pancakes[i])
 
-    for i in range(base-2,len(pancakes)):
+    for i in range(len(pancakes)-base,len(pancakes)):
         newpancakes.append(pancakes[i])
+    print(newpancakes)
     pancakes_global = newpancakes
 
 def sorted(pancakes):
@@ -56,7 +57,11 @@ class struct():
     def solve(self):
         print(pancakes_global)
         print(f"len={len(pancakes_global)} start = {self.start}")
+        if self.start:
+            sort_wbase(pancakes_global, len(pancakes_global)-1)
+            self.start = 0
         sort_wbase(pancakes_global,len(pancakes_global)-1-(self.start+1))
+
         print(pancakes_global)
 
 def find_structures(pancakes):
@@ -65,22 +70,39 @@ def find_structures(pancakes):
         if structmap[i] != "x":
             struct(i, structmap)
     print(valid_structs)
-    for structe in valid_structs:
-        structe.solve()
-    # print(pancakes)
-    # sort(pancakes)
-    # print(pancakes_global)
 
-    # sort_wbase(pancakes,4)
+
     # print(pancakes_global)
     
+def getbase():
+    last = int(pancakes_global[-1])
+    for i in range(len(pancakes_global)-1,-1,-1):
+        if int(pancakes_global[i]) > last:
+            return len(pancakes_global)-i-1
+        last = int(pancakes_global[i])
+        bigger = 0
+        e = pancakes_global[:i]
+        if len(e) == 1:
+            return len(pancakes_global)-1
+        for ee in e:
+            if pancakes_global[i] > ee:
+                bigger += 1
+        # print(f"bigger {bigger} i {i}")
+        if bigger < len(e)/2:
+            return len(pancakes_global)-i-1
+        
 def main():
     with open(("pancake0.txt"),"r",encoding='utf8') as datei:
         original_size = datei.readline().strip()
         for line in datei:
             pancakes_global.append(line.strip())
     find_structures(pancakes_global)
-    #while not sorted(pancakes_global):
-    #    sort(pancakes_global)
-    #print(pancakes_global)
+    for structe in valid_structs:
+        structe.solve()
+    # sort(pancakes)
+    print(pancakes_global)
+    while not sorted(pancakes_global):
+       base = getbase()
+       sort_wbase(pancakes_global, base)
+    print(pancakes_global)
 main()
