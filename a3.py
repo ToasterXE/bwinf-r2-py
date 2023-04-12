@@ -2,7 +2,7 @@ import math
 
 pancakes_global = []
 valid_structs = []
-
+structmap = []
 def sort(pancakes):
     global pancakes_global
     newpancakes = []
@@ -31,8 +31,9 @@ def sorted(pancakes):
         previous = current
     return True
 
-class struct():
-    def __init__(self, index, structmap):
+class struct2():
+    def __init__(self, index):
+        global structmap
         structmap[index] = "x"
         self.head = pancakes_global[index]
         self.length = 1
@@ -58,17 +59,48 @@ class struct():
         print(pancakes_global)
         print(f"len={len(pancakes_global)} start = {self.start}")
         if self.start:
-            sort_wbase(pancakes_global, len(pancakes_global)-1)
-            self.start = 0
-        sort_wbase(pancakes_global,len(pancakes_global)-1-(self.start+1))
+            if not sorted(pancakes_global):
+                sort_wbase(pancakes_global, len(pancakes_global)-1)
+                self.start = 0
+        if not sorted(pancakes_global):
+            sort_wbase(pancakes_global,len(pancakes_global)-1-(self.start+1))
 
         print(pancakes_global)
 
+class struct1():
+    def __init__(self, index):
+        global structmap
+        self.index = index
+        self.start = int(pancakes_global[index])
+        self.dir = False    #wird nach unten größer
+        self.length = 1
+        if self.start > int(pancakes_global[index+1]):
+            self.dir = True #wird nach unten kleiner
+        for i in range(index+1, len(pancakes_global)-1):
+            if bool(pancakes_global[i] > pancakes_global[i+1]) == self.dir:
+                self.length += 1
+            else:
+                break
+        if self.length >= 3:
+            for i in range(index,index+self.length):
+                    structmap[i] = "x"
+            valid_structs.append(self)
+
+    def solve(self):
+        valid_structs.remove(self)
+        pass
+
 def find_structures(pancakes):
-    structmap = pancakes.copy()
+    global structmap
+    structmap = pancakes.copy()    
     for i in range(0, len(pancakes)-3):
         if structmap[i] != "x":
-            struct(i, structmap)
+            struct1(i)
+        print(f"structmap: {structmap}")
+        # print(f"index: {i} map:{structmap}")
+    for i in range(0, len(pancakes)-3):
+        if structmap[i] != "x":
+            struct2(i)
     print(valid_structs)
 
 
@@ -99,10 +131,16 @@ def main():
     find_structures(pancakes_global)
     for structe in valid_structs:
         structe.solve()
+        break
     # sort(pancakes)
     print(pancakes_global)
     while not sorted(pancakes_global):
-       base = getbase()
-       sort_wbase(pancakes_global, base)
+        base = getbase()
+        sort_wbase(pancakes_global, base)
+        if not sorted(pancakes_global):
+            find_structures(pancakes_global)
+            for structe in valid_structs:
+                structe.solve()
+                break
     print(pancakes_global)
 main()
