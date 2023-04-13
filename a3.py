@@ -12,15 +12,18 @@ def sort(pancakes):
 
 def sort_wbase(pancakes,base = 0):
     global pancakes_global
-    newpancakes = []
-    print(base)
-    for i in range(len(pancakes)-base-2,-1,-1):
-        newpancakes.append(pancakes[i])
+    if base < 0 or sorted(pancakes_global):
+        pass
+    else:
+        newpancakes = []
+        print(f"base: {base}")
+        for i in range(len(pancakes)-base-2,-1,-1):
+            newpancakes.append(pancakes[i])
 
-    for i in range(len(pancakes)-base,len(pancakes)):
-        newpancakes.append(pancakes[i])
-    print(newpancakes)
-    pancakes_global = newpancakes
+        for i in range(len(pancakes)-base,len(pancakes)):
+            newpancakes.append(pancakes[i])
+        print(newpancakes)
+        pancakes_global = newpancakes
 
 def sorted(pancakes):
     previous = pancakes[-1]
@@ -31,42 +34,84 @@ def sorted(pancakes):
         previous = current
     return True
 
-class struct2():
+class struct3():
     def __init__(self, index):
         global structmap
+        old_map = structmap.copy()
         structmap[index] = "x"
         self.head = pancakes_global[index]
         self.length = 1
-        self.interruption = pancakes_global[index+1]
+        self.interruption = pancakes_global[index-1]
+        self.dir = False    #wird nach oben größer
+        self.stapelende = len(pancakes_global) - index+2   #>1: nicht zweitunterster pancake    #0: zweitunterster pancake; +2 weil len() diff und 1 weil e nicht ende
         self.last = self.head
-        self.dir = False
-        self.start = index
-        if self.head > pancakes_global[index+2]:
-            self.dir = True
-        for i in range(index + 2, len(pancakes_global)):
+        if self.head > pancakes_global[index-2]:
+            self.dir = True     #wird nach oben kleiner
+        for i in range(index-2, 0, -1):
             if bool(self.last > pancakes_global[i]) == self.dir:
                 structmap[i] = "x"
                 self.length += 1
                 self.last = pancakes_global[i]
             else:
                 break
-        print(f"head = {self.head} len = {self.length} index = {index+self.length}")
-        self.extreme = min(int(self.head), int(pancakes_global[int(index + self.length)]))
+            
+            if self.length >= 3:
+                valid_structs.append(self)
+            else:
+                structmap = old_map
+
+    def solve(self):
+        valid_structs.remove(self)
+        sort_wbase(pancakes_global)
+        if self.stapelende:
+            sort_wbase(pancakes_global, len(pancakes_global)-2)
+
+
+
+class struct2():
+    def __init__(self, index):
+        global structmap
+        old_map = structmap.copy()
+        structmap[index] = "x"
+        self.head = int(pancakes_global[index])
+        self.length = 1
+        self.interruption = pancakes_global[index+1]
+        self.last = self.head
+        self.dir = False
+        self.stapelanfang = index      #1: nicht oberste pfannkuchen; 0: oberster pfannenkuchen
+        if self.head > int(pancakes_global[index+2]):
+            self.dir = True
+        for i in range(index + 2, len(pancakes_global)):
+            if bool(int(self.last) > int(pancakes_global[i])) == self.dir:
+                structmap[i] = "x"
+                self.length += 1
+                self.last = pancakes_global[i]
+            else:
+                break
+        self.extreme = min(int(self.head), int(pancakes_global[int(index + self.length)]))  #unwichtig
+        # print(f"{self}self.head={self.head} dings {pancakes_global[index]}")
+        print(self.extreme, self.head)
         if self.length >= 3:
             valid_structs.append(self)
+            print(f"head = {self.head} len = {self.length} end = {index+self.length}")
+        
+        else:
+            structmap = old_map
+
 
     def solve(self):
         print(pancakes_global)
-        print(f"len={len(pancakes_global)} start = {self.start}")
-        if self.start:
-            if not sorted(pancakes_global):
+        # print(f"len={len(pancakes_global)} start = {self.start}")
+        
+        if self.extreme == self.head:
+                sort_wbase(pancakes_global,len(pancakes_global)-(self.length+2))
+        if self.stapelanfang:
                 sort_wbase(pancakes_global, len(pancakes_global)-1)
                 self.start = 0
-        if not sorted(pancakes_global):
-            sort_wbase(pancakes_global,len(pancakes_global)-1-(self.start+1))
-
+        sort_wbase(pancakes_global,len(pancakes_global)-1-(self.stapelanfang+1))
+        valid_structs.remove(self)
         print(pancakes_global)
-
+    
 class struct1():
     def __init__(self, index):
         global structmap
@@ -88,7 +133,6 @@ class struct1():
 
     def solve(self):
         valid_structs.remove(self)
-        pass
 
 def find_structures(pancakes):
     global structmap
