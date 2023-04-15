@@ -27,27 +27,31 @@ def genstack(len):
     return stack
 
 def get_pwue(n):
-    global pancakes_global, solutions,solved
-    insgl = []
+    global pancakes_global, solved, solutions
     for i in range(0,120):
         pancakes_global.clear()
-        solutions.clear()
         solved = [[],[],[],[],[]]
         pancakes_global = genstack(5)
+        solutions.clear()
         # print(pancakes_global)
         # print(pancakes_global)
         execute_threads(get_threads())
         e = "   " * (5-len(get_longest()[0]))
         print(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")
+        max_moves = 0
+        e = 0
+        for solution in solutions:
+            if len(solution[1]) > max_moves:
+                max_moves = len(solution[1])
+                e = solution
+        # print(solution)
 counter = 0
 
-def sort(pancakes,base = 0,liste=0):
+def sort(pancakes,base = 0,liste=["eee"]):
     global counter, solutions
     counter += 1
-    # if counter == numofsolution//10:
-    #     print("10%...")
     newpancakes = []
-    # print(f"base: {base}")
+    # liste.append(base)
     for i in range(len(pancakes)-base-2,-1,-1):
         newpancakes.append(pancakes[i])
 
@@ -81,7 +85,6 @@ def normalize(stack):
     return nstack
 
 def recurse(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswege rechnet man aus mit get_numofsolutions()
-    # estack = normalize(stack)
     if not solved[len(stack)]:
         for i in range(0, len(stack)):
             if not solved[len(stack)]:
@@ -96,7 +99,7 @@ def recurse(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswe
 def start_sort(startdata):
     for start in startdata:
         pancakes = pancakes_global.copy()
-        pancakes = sort(pancakes,start-1)
+        pancakes = sort(pancakes,start-1,[start-1])
         recurse(pancakes,[start-1])
 
 def get_longest():
@@ -137,7 +140,7 @@ def get_threads():
     if sorted(pancakes_global):
         solved[len(pancakes_global)-1].append((pancakes_global))
         # print(f"sorted {newpancakes} schritte: {liste}")
-        solutions.append([pancakes_global,None])
+        solutions.append([pancakes_global,[None]])
     threads = []
     for i in range(0,og_size):
         if i >= cores:
