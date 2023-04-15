@@ -9,7 +9,7 @@ if not cores:
 solutions = []
 pancakes_global = []
 og_size = 5
-solved = [[],[],[],[],[]]
+solved = []
 allstacks = []
 
 def genstack(len):
@@ -22,29 +22,44 @@ def genstack(len):
 
     for e in allstacks:
         if e == stack:
-            return genstack(len)    
+            return genstack(len)           
     allstacks.append(stack.copy())
     return stack
-
+insgsol = []
 def get_pwue(n):
     global pancakes_global, solved, solutions
-    for i in range(0,120):
+    rangee = 1
+    solvede = []
+    for i in range(1,n+1):
+        rangee *= i
+        solvede.append([])
+    for i in range(0,rangee):
+        sol = []
         pancakes_global.clear()
-        solved = [[],[],[],[],[]]
-        pancakes_global = genstack(5)
+        for e in solved:
+            e.clear()
         solutions.clear()
-        # print(pancakes_global)
+
+        pancakes_global = genstack(n)
+
+        solved = solvede.copy()
+        sol.append(pancakes_global.copy())
         # print(pancakes_global)
         execute_threads(get_threads())
+
+        sol.append(get_longest()[0])
+        sol.append(get_longest()[1])
+        insgsol.append(sol)
         e = "   " * (5-len(get_longest()[0]))
-        print(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")
-        max_moves = 0
-        e = 0
-        for solution in solutions:
-            if len(solution[1]) > max_moves:
-                max_moves = len(solution[1])
-                e = solution
-        # print(solution)
+        print(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")   #hiererer
+    max_moves = 0
+    e = 0
+    for solution in insgsol:
+        if len(solution[2]) > max_moves:
+            max_moves = len(solution[2])
+            e = solution
+    print(f"Jeder Stapel der Länge {len(e[0])} lässt sich in höchstens {len(e[2])} Pfannenkuchen-Wende-Und-Ess-Operationen sortieren.")
+
 counter = 0
 
 def sort(pancakes,base = 0,liste=["eee"]):
@@ -170,7 +185,7 @@ def calculate_etime():
     return f"{etime//60}m {int(etime%60)}s"
 numofsolution = get_numofsolutions(og_size)
 # main()
-get_pwue(5)
+get_pwue(7)
 # print(normalize([8, 2, 11]))
 # print(sorted(['1', '11', '4', '5', '7', '9']))
 # print(get_numofsolutions(5))
