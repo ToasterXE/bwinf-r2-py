@@ -8,18 +8,39 @@ if not cores:
 
 solutions = []
 pancakes_global = []
-og_size = 0
-solved = []
+og_size = 5
+solved = [[],[],[],[],[]]
+allstacks = []
 
 def genstack(len):
     stack = []
     for i in range(0,len):
-        pancake = random.randint(1,len)
-        while pancake in stack:
-            pancake = random.randint(1,len)
-        stack.append(pancake)
+        e = random.randint(1,len)
+        while e in stack:
+            e = random.randint(1,len)
+        stack.append(e)
 
+    for e in allstacks:
+        if e == stack:
+            return genstack(len)    
+    allstacks.append(stack.copy())
+    return stack
+
+def get_pwue(n):
+    global pancakes_global, solutions,solved
+    insgl = []
+    for i in range(0,120):
+        pancakes_global.clear()
+        solutions.clear()
+        solved = [[],[],[],[],[]]
+        pancakes_global = genstack(5)
+        # print(pancakes_global)
+        # print(pancakes_global)
+        execute_threads(get_threads())
+        e = "   " * (5-len(get_longest()[0]))
+        print(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")
 counter = 0
+
 def sort(pancakes,base = 0,liste=0):
     global counter, solutions
     counter += 1
@@ -33,7 +54,7 @@ def sort(pancakes,base = 0,liste=0):
     for i in range(len(pancakes)-base,len(pancakes)):
         newpancakes.append(pancakes[i])
     if sorted(newpancakes)and len(newpancakes)>1:
-        solved[len(pancakes)].append(normalize(pancakes))
+        solved[len(pancakes)-1].append((pancakes))
         # print(f"sorted {newpancakes} schritte: {liste}")
         solutions.append([newpancakes,liste])
     return(newpancakes)
@@ -59,9 +80,8 @@ def normalize(stack):
         nstack[index] = len(stack)-i
     return nstack
 
-
 def recurse(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswege rechnet man aus mit get_numofsolutions()
-    estack = normalize(stack)
+    # estack = normalize(stack)
     if not solved[len(stack)]:
         for i in range(0, len(stack)):
             if not solved[len(stack)]:
@@ -80,7 +100,7 @@ def start_sort(startdata):
         recurse(pancakes,[start-1])
 
 def get_longest():
-    print("counting pancake stacks...")
+    # print("counting pancake stacks...")
     longest = solutions[0][0]
     solution = solutions[0][1]
     for stack in solutions:
@@ -111,10 +131,13 @@ def get_numofsolutions(size):
         numofsolutions += new 
 
     return numofsolutions
-    
 
 def get_threads():
-    print("creating threads...")
+    # print("creating threads...")
+    if sorted(pancakes_global):
+        solved[len(pancakes_global)-1].append((pancakes_global))
+        # print(f"sorted {newpancakes} schritte: {liste}")
+        solutions.append([pancakes_global,None])
     threads = []
     for i in range(0,og_size):
         if i >= cores:
@@ -124,13 +147,13 @@ def get_threads():
     return threads
 
 def execute_threads(threadlist):
-    print("executing threads...")
+    # print("executing threads...")
     exe_threads = []
     for data in threadlist:
         exe_threads.append(Thread(target=start_sort, args=(data,)))
     for e in exe_threads:
         e.start()
-    print("eating pancakes...")
+    # print("eating pancakes...")
     for e in exe_threads:
         e.join()
 
@@ -140,10 +163,11 @@ def calculate_etime():
         sort(pancakes_global.copy(),random.randint(0,og_size))
     endtime = time.time()
     etime100 = endtime-starttime
-    etime = (etime100 * get_numofsolutions(og_size)) / 1000000
+    etime = (etime100 * get_numofsolutions(og_size)) / 30000000000
     return f"{etime//60}m {int(etime%60)}s"
 numofsolution = get_numofsolutions(og_size)
-main()
+# main()
+get_pwue(5)
 # print(normalize([8, 2, 11]))
 # print(sorted(['1', '11', '4', '5', '7', '9']))
 # print(get_numofsolutions(5))
