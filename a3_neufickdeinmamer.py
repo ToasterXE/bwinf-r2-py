@@ -33,7 +33,7 @@ def sort(pancakes,base = 0,liste=0):
     for i in range(len(pancakes)-base,len(pancakes)):
         newpancakes.append(pancakes[i])
     if sorted(newpancakes)and len(newpancakes)>1:
-        solved[len(pancakes)].append(pancakes)
+        solved[len(pancakes)].append(normalize(pancakes))
         # print(f"sorted {newpancakes} schritte: {liste}")
         solutions.append([newpancakes,liste])
     return(newpancakes)
@@ -45,24 +45,26 @@ def sorted(pancakes):
         if current > previous:
             return False
         previous = current  
-    print(solved)
+    # print(solved)
     
     return True
 
 def normalize(stack):
+    ostack = stack.copy()
     nstack= stack.copy()
     for i in range(0,len(stack)):
-        max_e = max(stack)
+        max_e = max(ostack)
         index = stack.index(max_e)
-        stack[index] = 0
+        ostack[index] = 0
         nstack[index] = len(stack)-i
     return nstack
 
 
 def recurse(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswege rechnet man aus mit get_numofsolutions()
-    if stack not in solved[len(stack)]:
+    estack = normalize(stack)
+    if estack not in solved[len(stack)]:
         for i in range(0, len(stack)):
-            if stack not in solved[len(stack)]:
+            if estack not in solved[len(stack)]:
                 lister = liste.copy()
                 lister.append(i)
                 nstack = stack.copy()
@@ -88,12 +90,13 @@ def get_longest():
     return(longest, solution)
 
 def main():
-    global og_size
+    global og_size,pancakes_global
     with open(("pancake0.txt"),"r",encoding='utf8') as datei:
         og_size = int(datei.readline().strip())
         for line in datei:
-            pancakes_global.append(line.strip())
+            pancakes_global.append(int(line.strip()))
             solved.append([])
+
     print("calculating time...")
     print(f"estimated time: {calculate_etime()}")
     execute_threads(get_threads())
@@ -140,8 +143,8 @@ def calculate_etime():
     etime = (etime100 * get_numofsolutions(og_size)) / 1000000
     return f"{etime//60}m {int(etime%60)}s"
 numofsolution = get_numofsolutions(og_size)
-# main()
-print(normalize([8, 2, 11]))
+main()
+# print(normalize([8, 2, 11]))
 # print(sorted(['1', '11', '4', '5', '7', '9']))
 # print(get_numofsolutions(5))
 # print(counter)
