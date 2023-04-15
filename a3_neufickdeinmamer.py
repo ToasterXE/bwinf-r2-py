@@ -62,9 +62,9 @@ def normalize(stack):
 
 def recurse(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswege rechnet man aus mit get_numofsolutions()
     estack = normalize(stack)
-    if estack not in solved[len(stack)]:
+    if not solved[len(stack)]:
         for i in range(0, len(stack)):
-            if estack not in solved[len(stack)]:
+            if not solved[len(stack)]:
                 lister = liste.copy()
                 lister.append(i)
                 nstack = stack.copy()
