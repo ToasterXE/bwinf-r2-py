@@ -12,7 +12,7 @@ og_size = 5
 solved = []
 allstacks = []
 
-def genstack(len,liste, dep=0):
+def genstacks(len,liste, dep=0):
     for i in range(1,len+1):
         ee = False
         for e in range(0,dep):
@@ -21,7 +21,7 @@ def genstack(len,liste, dep=0):
         if not ee:
             liste[dep]=i
             if dep < len-1:
-                genstack(len,liste.copy(),dep+1)
+                genstacks(len,liste.copy(),dep+1)
             else:
                 allstacks.append(liste)
 
@@ -35,17 +35,17 @@ def get_pwue(n):
         rangee *= i
         solvede.append([])
     liste = solvede.copy()
-    genstack(n,liste)
-    print(allstacks)
+    genstacks(n,liste)
+
     for stacke in allstacks:
         sol = []
-        pancakes_global == stacke
+        pancakes_global = stacke.copy()
         for e in solved:
             e.clear()
         solutions.clear()
 
 
-        # solved = solvede.copy()
+        solved = solvede.copy()
         sol.append(pancakes_global.copy())
         # print(pancakes_global)
         execute_threads(get_threads())
