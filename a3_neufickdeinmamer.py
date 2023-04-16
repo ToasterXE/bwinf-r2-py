@@ -25,7 +25,7 @@ def genstacks(len,liste, dep=0):
             else:
                 allstacks.append(liste)
 
-
+fertige = []
 insgsol = []
 def get_pwue(n):
     global pancakes_global, solved, solutions
@@ -54,15 +54,24 @@ def get_pwue(n):
         sol.append(get_longest()[1])
         insgsol.append(sol)
         e = "   " * (5-len(get_longest()[0]))
+        fertige.append(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")
         print(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")   #hiererer
     max_moves = 0
     e = 0
+
+
     for solution in insgsol:
         if len(solution[2]) > max_moves:
             max_moves = len(solution[2])
             e = solution
-    print(f"Jeder Stapel der Länge {len(e[0])} lässt sich in höchstens {len(e[2])} Pfannenkuchen-Wende-Und-Ess-Operationen sortieren.")
 
+    with open(f"daten{n}.txt","w",encoding="utf8") as output:
+        for line in fertige:
+            output.write(line)
+            output.write("\n")
+        output.write(f"Jeder Stapel der Länge {len(e[0])} lässt sich in höchstens {len(e[2])} Pfannenkuchen-Wende-Und-Ess-Operationen sortieren.")
+    print(f"Jeder Stapel der Länge {len(e[0])} lässt sich in höchstens {len(e[2])} Pfannenkuchen-Wende-Und-Ess-Operationen sortieren.")
+    print(e)
 counter = 0
 
 def sort(pancakes,base = 0,liste=["eee"]):
@@ -102,7 +111,7 @@ def normalize(stack):
         nstack[index] = len(stack)-i
     return nstack
 
-def recurse(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswege rechnet man aus mit get_numofsolutions()
+def sort_stack(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswege rechnet man aus mit get_numofsolutions()
     if not solved[len(stack)]:
         for i in range(0, len(stack)):
             if not solved[len(stack)]:
@@ -112,13 +121,13 @@ def recurse(stack,liste):   #es gibt mehr lösungswege als lösungen; lösungswe
                 nstack = sort(nstack,i,lister)
                 # print(f"stack:{stack}nstack:{nstack}")
                 if len(nstack)>1:
-                    recurse(nstack,lister)
+                    sort_stack(nstack,lister)
  
 def start_sort(startdata):
     for start in startdata:
         pancakes = pancakes_global.copy()
         pancakes = sort(pancakes,start-1,[start-1])
-        recurse(pancakes,[start-1])
+        sort_stack(pancakes,[start-1])
 
 def get_longest():
     # print("counting pancake stacks...")
@@ -188,7 +197,7 @@ def calculate_etime():
     return f"{etime//60}m {int(etime%60)}s"
 numofsolution = get_numofsolutions(og_size)
 # main()
-get_pwue(5)
+get_pwue(9)
 # print(normalize([8, 2, 11]))
 # print(sorted(['1', '11', '4', '5', '7', '9']))
 # print(get_numofsolutions(5))
