@@ -12,19 +12,20 @@ og_size = 5
 solved = []
 allstacks = []
 
-def genstack(len):
-    stack = []
-    for i in range(0,len):
-        e = random.randint(1,len)
-        while e in stack:
-            e = random.randint(1,len)
-        stack.append(e)
+def genstack(len,liste, dep=0):
+    for i in range(1,len+1):
+        ee = False
+        for e in range(0,dep):
+            if liste[e] == i:
+                ee = True
+        if not ee:
+            liste[dep]=i
+            if dep < len-1:
+                genstack(len,liste.copy(),dep+1)
+            else:
+                allstacks.append(liste)
 
-    for e in allstacks:
-        if e == stack:
-            return genstack(len)           
-    allstacks.append(stack.copy())
-    return stack
+
 insgsol = []
 def get_pwue(n):
     global pancakes_global, solved, solutions
@@ -33,16 +34,18 @@ def get_pwue(n):
     for i in range(1,n+1):
         rangee *= i
         solvede.append([])
-    for i in range(0,rangee):
+    liste = solvede.copy()
+    genstack(n,liste)
+    print(allstacks)
+    for stacke in allstacks:
         sol = []
-        pancakes_global.clear()
+        pancakes_global == stacke
         for e in solved:
             e.clear()
         solutions.clear()
 
-        pancakes_global = genstack(n)
 
-        solved = solvede.copy()
+        # solved = solvede.copy()
         sol.append(pancakes_global.copy())
         # print(pancakes_global)
         execute_threads(get_threads())
@@ -185,7 +188,7 @@ def calculate_etime():
     return f"{etime//60}m {int(etime%60)}s"
 numofsolution = get_numofsolutions(og_size)
 # main()
-get_pwue(7)
+get_pwue(5)
 # print(normalize([8, 2, 11]))
 # print(sorted(['1', '11', '4', '5', '7', '9']))
 # print(get_numofsolutions(5))
