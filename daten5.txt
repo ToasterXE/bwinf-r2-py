@@ -118,4 +118,4 @@ stack: [5, 4, 2, 1, 3] stack solved: [1, 2, 4, 5]    solution: [0]
 stack: [5, 4, 2, 3, 1] stack solved: [2, 3, 5]       solution: [0, 1]
 stack: [5, 4, 3, 1, 2] stack solved: [1, 3, 4, 5]    solution: [0]
 stack: [5, 4, 3, 2, 1] stack solved: [2, 3, 4, 5]    solution: [0]
-Jeder Stapel der Länge 5 lässt sich in höchstens 3 Pfannenkuchen-Wende-Und-Ess-Operationen sortieren.
+Jeder Stapel der Länge 5 lässt sich in höchstens 3 Pfannkuchen-Wende-Und-Ess-Operationen sortieren.

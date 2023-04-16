@@ -1,4 +1,4 @@
-import random, os, time, sys
+import random, os
 from threading import Thread
 
 cores = os.cpu_count()
@@ -7,30 +7,29 @@ if not cores:
 
 solutions = []
 pancakes_global = []
-og_size = 5
+og_size = 0
 solved = []
 allstacks = []
-pwuezahlen = [0,0,1,2,2,3,3,4,5,5]
+pwuezahlen = [0,0,1,2,2,3,3,4,5,5]      #erstellt mit der Tabelle aus der Aufgabenstellung und den Ergebnissen von b)
+fertige = []
+pwue_allelösungen = []
+
 def genstacks(len,liste, dep=0):
     for i in range(1,len+1):
-        ee = False
+        inlist = False
         for e in range(0,dep):
             if liste[e] == i:
-                ee = True
-        if not ee:
+                inlist = True
+        if not inlist:
             liste[dep]=i
             if dep < len-1:
                 genstacks(len,liste.copy(),dep+1)
             else:
                 allstacks.append(liste)
 
-fertige = []
-insgsol = []
-pwue = False
 def get_pwue(n):
     global pancakes_global, solved, solutions
     rangee = 1
-    pwue = True
     solvede = []
     pwue_last= n
     for i in range(1,n+1):
@@ -41,11 +40,12 @@ def get_pwue(n):
     genstacks(n,liste)
     if pwuezahlen[n-1]:
         pwue_last = pwuezahlen[n-1]
+    print("calculating solutions...")
     for stacke in allstacks:
         sol = []
         pancakes_global = stacke.copy()
-        for e in solved:
-            e.clear()
+        for currentbest in solved:
+            currentbest.clear()
         solutions.clear()
 
 
@@ -56,33 +56,30 @@ def get_pwue(n):
         sol.append(get_longest()[1])
 
         if len(get_longest()[1])>pwue_last:
-            print(f"Jeder Stapel der Länge {n} lässt sich in höchstens {len(get_longest()[1])} Pfannkuchen-Wende-Und-Ess-Operationen sortieren.")
             print(f"Stapel: {pancakes_global} Stapel sortiert: {get_longest()[0]} Lösungsweg: {get_longest()[1]}")
             return 0
         
-        insgsol.append(sol)
-        e = "   " * (5-len(get_longest()[0]))
-        fertige.append(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")
-        print(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{e} solution: {get_longest()[1]}")   #hiererer
+        pwue_allelösungen.append(sol)
+        leerzeichen = "   " * (5-len(get_longest()[0]))
+        fertige.append(f"stack: {pancakes_global} stack solved: {get_longest()[0]}{leerzeichen} solution: {get_longest()[1]}")
+    
     max_moves = 0
-    e = 0
-
-
-    for solution in insgsol:
+    currentbest = 0
+    print("finding longest solution")
+    for solution in pwue_allelösungen:
         if len(solution[2]) > max_moves:
             max_moves = len(solution[2])
-            e = solution
+            currentbest = solution
 
     with open(f"daten{n}.txt","w",encoding="utf8") as output:
         for line in fertige:
             output.write(line)
             output.write("\n")
-        output.write(f"Jeder Stapel der Länge {len(e[0])} lässt sich in höchstens {len(e[2])} Pfannkuchen-Wende-Und-Ess-Operationen sortieren.")
-    print(f"Jeder Stapel der Länge {len(e[0])} lässt sich in höchstens {len(e[2])} Pfannkuchen-Wende-Und-Ess-Operationen sortieren.")
-    print(f"Stapel: {e[0]} Stapel sortiert: {e[1]} Lösungsweg: {e[2]}")
-counter = 0
+        output.write(f"Jeder Stapel der Länge {len(currentbest[0])} lässt sich in höchstens {len(currentbest[2])} Pfannkuchen-Wende-Und-Ess-Operationen sortieren.")
+    print(f"Jeder Stapel der Länge {len(currentbest[0])} lässt sich in höchstens {len(currentbest[2])} Pfannkuchen-Wende-Und-Ess-Operationen sortieren.")
+    print(f"Stapel: {currentbest[0]} Stapel sortiert: {currentbest[1]} Lösungsweg: {currentbest[2]}")
 
-def sort(pancakes,base = 0,lösungsweg=["eee"]):
+def sort(pancakes,base = 0,lösungsweg=[]):
     global solutions
     newpancakes = []
     for i in range(len(pancakes)-base-2,-1,-1):
@@ -104,16 +101,6 @@ def sorted(pancakes):
         previous = current   
     return True
 
-def normalize(stack):
-    ostack = stack.copy()
-    nstack= stack.copy()
-    for i in range(0,len(stack)):
-        max_e = max(ostack)
-        index = stack.index(max_e)
-        ostack[index] = 0
-        nstack[index] = len(stack)-i
-    return nstack
-   #es gibt mehr lösungswege als lösungen; lösungswege rechnet man aus mit get_numofsolutions()
 def sort_stack(stack,lösungsweg):
     if not solved[len(stack)]:
         for i in range(0, len(stack)):
@@ -132,7 +119,6 @@ def start_sort(startdata):
         sort_stack(pancakes,[start])
 
 def get_longest():
-    # print("counting pancake stacks...")
     longest = solutions[0][0]
     solution = solutions[0][1]
     for stack in solutions:
@@ -141,32 +127,7 @@ def get_longest():
             solution = stack[1]
     return(longest, solution)
 
-def main():
-    global og_size,pancakes_global
-    with open(("pancake0.txt"),"r",encoding='utf8') as datei:
-        og_size = int(datei.readline().strip())
-        for line in datei:
-            pancakes_global.append(int(line.strip()))
-            solved.append([])
-
-    # print("calculating time...")
-    # print(f"estimated time: {calculate_etime()}")
-    execute_threads(get_threads())
-    print(get_longest())
-
-def get_numofsolutions(size):
-    numofsolutions = 0
-    for i in range(2, size+1):
-        new = 1
-        for e in range(i,size+1):
-            new *= e
-        numofsolutions += new 
-
-    return numofsolutions
-
 def get_threads():
-    if not pwue:
-        print("creating threads...")
     if sorted(pancakes_global):
         solved[len(pancakes_global)-1].append((pancakes_global))
         solutions.append([pancakes_global,[None]])
@@ -179,31 +140,14 @@ def get_threads():
     return threads
 
 def execute_threads(threadlist):
-    if not pwue:
-        print("executing threads...")
     exe_threads = []
     for data in threadlist:
         exe_threads.append(Thread(target=start_sort, args=(data,)))
     for e in exe_threads:
         e.start()
-    if not pwue: 
-        print("eating pancakes...")
     for e in exe_threads:
         e.join()
 
-def calculate_etime():
-    starttime = time.time()
-    for i in range(0,1000000):
-        sort(pancakes_global.copy(),random.randint(0,og_size))
-    endtime = time.time()
-    etime100 = endtime-starttime
-    etime = (etime100 * get_numofsolutions(og_size)) / 30000000000
-    return f"{etime//60}m {int(etime%60)}s"
-numofsolution = get_numofsolutions(og_size)
-# main()
-
-get_pwue(10)
-# print(normalize([8, 2, 11]))
-# print(sorted(['1', '11', '4', '5', '7', '9']))
-# print(get_numofsolutions(5))
-# print(counter)
+print("Stapelgröße angeben")
+stapelgröße = input()
+get_pwue(stapelgröße)
