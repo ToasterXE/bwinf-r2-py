@@ -28,8 +28,9 @@ def genstacks(len,liste, dep=0):
                 allstacks.append(liste)
 
 def get_pwue(n):
-    global pancakes_global, solved, solutions
+    global pancakes_global, solved, solutions, og_size
     rangee = 1
+    og_size = n
     solvede = []
     pwue_last= n
     for i in range(1,n+1):
@@ -56,6 +57,7 @@ def get_pwue(n):
         sol.append(get_longest()[1])
 
         if len(get_longest()[1])>pwue_last:
+            print(f"Jeder Stapel der Länge {n} lässt sich in höchstens {len(get_longest()[1])} Pfannkuchen-Wende-Und-Ess-Operationen sortieren.")
             print(f"Stapel: {pancakes_global} Stapel sortiert: {get_longest()[0]} Lösungsweg: {get_longest()[1]}")
             return 0
         
@@ -150,5 +152,5 @@ def execute_threads(threadlist):
 
 print("Stapelgröße angeben")
 stapelgröße = input()
-get_pwue(stapelgröße)
+get_pwue(int(stapelgröße))
 input()

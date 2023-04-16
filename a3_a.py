@@ -61,7 +61,7 @@ def get_longest():
 
 def main():
     global og_size,pancakes_global
-    with open((dateiname),"r",encoding='utf8') as datei:
+    with open(str(dateiname),"r",encoding='utf8') as datei:
         og_size = int(datei.readline().strip())
         for line in datei:
             pancakes_global.append(int(line.strip()))
