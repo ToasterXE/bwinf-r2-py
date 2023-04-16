@@ -98,3 +98,4 @@ print("Dateinamen angeben:")
 dateiname = input()
 
 main()
+input()

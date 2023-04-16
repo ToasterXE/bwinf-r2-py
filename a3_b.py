@@ -151,3 +151,4 @@ def execute_threads(threadlist):
 print("Stapelgröße angeben")
 stapelgröße = input()
 get_pwue(stapelgröße)
+input()
