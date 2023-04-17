@@ -10,7 +10,7 @@ pancakes_global = []
 og_size = 0
 solved = []
 allstacks = []
-pwuezahlen = [0,0,1,2,2,3,3,4,5,5,6]      #erstellt mit der Tabelle aus der Aufgabenstellung und den Ergebnissen von b)
+pwuezahlen = [0,0,1,2,2,3,3,4,5,5]      #erstellt mit der Tabelle aus der Aufgabenstellung und den Ergebnissen von b)
 fertige = []
 pwue_allelösungen = []
 
@@ -67,7 +67,7 @@ def get_pwue(n):
     
     max_moves = 0
     currentbest = 0
-    print("finding longest solution")
+    print("finding longest solution...")
     for solution in pwue_allelösungen:
         if len(solution[2]) > max_moves:
             max_moves = len(solution[2])
@@ -151,7 +151,6 @@ def execute_threads(threadlist):
         e.join()
 
 print("Stapelgröße angeben")
-# stapelgröße = input()
-# get_pwue(int(stapelgröße))
-# input()
-get_pwue(11)
+stapelgröße = input()
+get_pwue(int(stapelgröße))
+input()
