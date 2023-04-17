@@ -8,31 +8,66 @@ class außenstelle():
         außenstellen.append(self)
         self.combinations = []
     def get_combinations(self):
-        for mitte in außenstellen:
-            if not mitte == self:
-                m,b,richtung = get_func(mitte.coords,self.coords)
+        for stelle1 in außenstellen:
+            if not stelle1 == self:
+                m,b,richtung = get_func(self.coords,stelle1.coords)
                 for stelle2 in außenstellen:
-                    if not (stelle2 == self or stelle2 == mitte):
+                    if not (stelle2 == self or stelle2 == stelle1):
                         if b == "e":
                             if bool(stelle2.coords.x < m) == richtung:
-                                self.combinations.append([mitte, stelle2])
-                                # print(f"mitte {mitte.coords} stelle {self.coords} stelle2 {stelle2.coords}")
+                                self.combinations.append([stelle1, self, stelle2])
+                                # print(f"mitte {self.coords} stelle {stelle1.coords} stelle2 {stelle2.coords}")
                         else:
                             if bool(stelle2.coords.x * m + b > stelle2.coords.y) == richtung:
-                                self.combinations.append([mitte, stelle2])
-                                # print(f"mitte {mitte.coords} stelle {self.coords} stelle2 {stelle2.coords}")
-        all_combinations.append(self.combinations)
+                                self.combinations.append([stelle1, self, stelle2])
+                                # print(f"mitte {self.coords} stelle {stelle1.coords} stelle2 {stelle2.coords}")
+        all_combinations.append(self)
 
 def get_distance(stelle1, stelle2):
     distance = math.sqrt((stelle1.x-stelle2.x)**2+(stelle1.y-stelle2.y)**2)
+globalsol = 0
+found = False
+def try_strecke(startpunkt,alle,reihenfolge):
+    global found
+    if found:
+        return(1)
+    reihenfolge.append(startpunkt[0])
+    if startpunkt[0] in alle:
+        alle.remove(startpunkt[0])   
+    else:
+        print(startpunkt[0].coords.x,startpunkt[0].coords.y,"e")
+
+    if len(alle) == 2:
+        reihenfolge.append(startpunkt[1])
+        reihenfolge.append(startpunkt[2])
+        found = True
+        global globalsol
+        globalsol = reihenfolge.copy()
+
+    for i in range(0,len(startpunkt[2].combinations)):
+        e = startpunkt[2].combinations[i]
+
+        if e[0] == startpunkt[1] and e[2] in alle:
+            try_strecke(e,alle.copy(),reihenfolge.copy())
 
 def get_strecke():
     stellen = außenstellen.copy()
+    reihenfolge = []
     shortest = all_combinations[0]
-    for combination in all_combinations:
-        if len(combination)<len(shortest):
-            shortest = combination
-    print(shortest)
+    for punkt in all_combinations:
+        if not found:
+            # print(len(punkt.combinations))
+            # if len(punkt.combinations)<len(shortest.combinations):
+            shortest = punkt
+            # print(shortest.coords)
+            for i in range(0, len(shortest.combinations)):
+                
+                r = try_strecke(shortest.combinations[i], stellen.copy(), reihenfolge.copy())
+                if r:
+                    for i in range(0,len(globalsol)):
+                        print(globalsol[i].coords.x, globalsol[i].coords.y)
+                    break
+
     
 def get_func(mitte, stelle1):   #zone in der sich e befinden darf
     neue_stelle = mitte + pygame.math.Vector2(stelle1.y - mitte.y, (stelle1.x - mitte.x) * -1)
