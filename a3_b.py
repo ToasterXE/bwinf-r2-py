@@ -10,7 +10,7 @@ pancakes_global = []
 og_size = 0
 solved = []
 allstacks = []
-pwuezahlen = [0,0,1,2,2,3,3,4,5,5]      #erstellt mit der Tabelle aus der Aufgabenstellung und den Ergebnissen von b)
+pwuezahlen = [0,0,1,2,2,3,3,4,5,5,6]      #erstellt mit der Tabelle aus der Aufgabenstellung und den Ergebnissen von b)
 fertige = []
 pwue_allelösungen = []
 
@@ -151,6 +151,7 @@ def execute_threads(threadlist):
         e.join()
 
 print("Stapelgröße angeben")
-stapelgröße = input()
-get_pwue(int(stapelgröße))
-input()
+# stapelgröße = input()
+# get_pwue(int(stapelgröße))
+# input()
+get_pwue(11)

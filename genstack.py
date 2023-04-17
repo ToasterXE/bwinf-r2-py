@@ -1,5 +1,5 @@
 import random
-len = 6
+len = 11
 e = []
 for i in range(0,len):
     ee = random.randint(1,len)

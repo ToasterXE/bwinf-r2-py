@@ -141,28 +141,6 @@ def get_longest():
             solution = stack[1]
     return(longest, solution)
 
-def main():
-    global og_size,pancakes_global
-    with open(("pancake0.txt"),"r",encoding='utf8') as datei:
-        og_size = int(datei.readline().strip())
-        for line in datei:
-            pancakes_global.append(int(line.strip()))
-            solved.append([])
-
-    # print("calculating time...")
-    # print(f"estimated time: {calculate_etime()}")
-    execute_threads(get_threads())
-    print(get_longest())
-
-def get_numofsolutions(size):
-    numofsolutions = 0
-    for i in range(2, size+1):
-        new = 1
-        for e in range(i,size+1):
-            new *= e
-        numofsolutions += new 
-
-    return numofsolutions
 
 def get_threads():
     if not pwue:
@@ -191,18 +169,9 @@ def execute_threads(threadlist):
     for e in exe_threads:
         e.join()
 
-def calculate_etime():
-    starttime = time.time()
-    for i in range(0,1000000):
-        sort(pancakes_global.copy(),random.randint(0,og_size))
-    endtime = time.time()
-    etime100 = endtime-starttime
-    etime = (etime100 * get_numofsolutions(og_size)) / 30000000000
-    return f"{etime//60}m {int(etime%60)}s"
-numofsolution = get_numofsolutions(og_size)
 # main()
 
-get_pwue(10)
+get_pwue(5)
 # print(normalize([8, 2, 11]))
 # print(sorted(['1', '11', '4', '5', '7', '9']))
 # print(get_numofsolutions(5))
